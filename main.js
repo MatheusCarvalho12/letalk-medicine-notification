@@ -25,13 +25,13 @@ let totalDataSent = 0;
 let allUsers = [];
 let emailSentToday = false;
 
-const saoPauloTimezone = moment.tz('America/Sao_Paulo');
-
 async function getCurrentHourSaoPaulo() {
+  const saoPauloTimezone = moment.tz('America/Sao_Paulo');
   return saoPauloTimezone.format('HH');
 }
 
 async function getCurrentMinuteSaoPaulo() {
+  const saoPauloTimezone = moment.tz('America/Sao_Paulo');
   return saoPauloTimezone.format('mm');
 }
 
@@ -52,6 +52,7 @@ async function fetchDataFromDatabase(hour, minutes) {
 async function sendToWebhook(data) {
   try {
     await axios.post(webhookUrl, data);
+    console.log("Dados enviados para o webhook:", data)
     totalDataSent++;
     allUsers.push(data);
   } catch (error) {
@@ -75,7 +76,6 @@ async function sendDataToWebhook() {
 
     await Promise.all(dataFromDatabase.map(async (row) => {
       const addZeroToLeft = (value) => (value < 10 ? `0${value}` : value);
-    
       const dataToSend = {
         telefone: row['proprietario'],
         dosagemGrandeza: row['dosagem_(grandeza)'],
@@ -170,6 +170,7 @@ async function insertDataToDestinationTableI(data) {
         data.nome
       ];
 
+      console.log("Cadastrando novo medicamento:", insertValues)
       await client.query(insertQuery, insertValues);
 
     }
